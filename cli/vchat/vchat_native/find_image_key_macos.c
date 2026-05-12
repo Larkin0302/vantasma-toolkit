@@ -32,9 +32,10 @@
 #define AES_KEY_LEN 16
 #define SCAN_ALIGN  8                                    /* malloc 通常 8-16 字节对齐 */
 #define MAX_REGION  (128L * 1024 * 1024)
-#define V2_MAGIC    "\x07\x08V2\x08\x07"
 #define V2_MAGIC_LEN 6
 #define V2_HEADER   15   /* magic(6) + aes_size(4) + xor_size(4) + pad(1) */
+/* 用 byte array 避免 \x 转义歧义 */
+static const unsigned char V2_MAGIC[V2_MAGIC_LEN] = {0x07, 0x08, 'V', '2', 0x08, 0x07};
 
 
 /* 图片 magic 验证：JPEG/PNG/GIF/WebP，前 8-16 字节 */
