@@ -1,6 +1,6 @@
-# wxchat
+# vchat
 
-> 微信本地聊天记录的查询/导出/分析 CLI。一行命令拉聊天、找联系人、列语音、转录、导出朋友圈、看统计。**零运行依赖**（纯 Python stdlib + 可选 whisper），自带查询库 `wxchat_core/`。
+> 微信本地数据查询 / 解密 / 导出 CLI。万涂幻象社区工具合集成员。
 
 > ## ⚠️ 免责声明 · Personal Learning Only
 >
@@ -20,7 +20,7 @@
 
 
 ```
-$ wxchat ls 5
+$ vchat ls 5
 最近 5 个会话：
   [2026-05-12 00:59] 灯下白听友1群           📬1
   [2026-05-12 00:56] 祥瑞和Ta的社区朋友们
@@ -31,91 +31,88 @@ $ wxchat ls 5
 
 ## 这是什么
 
-wxchat 是一个**只做查询、不做解密**的 CLI 工具。你需要先用任意一个开源工具把微信本地 SQLCipher 数据库解密成普通 sqlite，把产物放到 wxchat 能找到的位置（默认 `~/.wxchat/data/decrypted/`），然后所有子命令都能跑了。
+vchat 是个命令行工具，能：
 
-跟其他「微信工具集成包」的区别：
-
-- **轻**：1300 行主 CLI + 1500 行查询库，纯 Python stdlib
-- **解耦**：解密由你选，wxchat 不绑死任何一个解密工具
-- **跨平台**：理论上 macOS/Linux/Windows 都能跑（解密产物结构对就行）
-- **可嵌入**：`from wxchat_core import ...` 直接当库用，给 LLM Agent / 脚本使
+- 自动解密本机微信本地数据库（一行 `sudo vchat setup`）
+- 查询、搜索、导出聊天记录 / 联系人 / 群成员 / 朋友圈 / 收藏 / 转账 / 语音转写 等
+- 输出 JSON，方便给 AI Agent / 脚本消费
 
 ## 60+ 子命令（v2.0 全部 kebab-case 风格）
 
 ```bash
 # 数据健康
-wxchat doctor                                   # 数据目录健康检查
-wxchat info                                     # 数据新鲜度概览
-sudo wxchat setup                               # 一键解密（含 codesign / 编译 / 扫内存 / 解所有 db）
-sudo wxchat decrypt                             # 仅解密（不重做 setup）
+vchat doctor                                   # 数据目录健康检查
+vchat info                                     # 数据新鲜度概览
+sudo vchat setup                               # 一键解密（含 codesign / 编译 / 扫内存 / 解所有 db）
+sudo vchat decrypt                             # 仅解密（不重做 setup）
 
 # 查询
-wxchat ls 20                                    # 最近 20 个会话
-wxchat history "祥瑞和Ta的社区朋友们" -n 5000     # 拉一个群 5000 条历史
-wxchat search "OPC" --fast                      # FTS 全库快速搜（10× 提速）
-wxchat export "某某" -o ~/Desktop/x.json        # 导出全部历史 JSON
-wxchat contacts "陈天泽"                         # 找单人 wxid
-wxchat history-history -n 30                    # 你的微信内搜索历史
+vchat ls 20                                    # 最近 20 个会话
+vchat history "祥瑞和Ta的社区朋友们" -n 5000     # 拉一个群 5000 条历史
+vchat search "OPC" --fast                      # FTS 全库快速搜（10× 提速）
+vchat export "某某" -o ~/Desktop/x.json        # 导出全部历史 JSON
+vchat contacts "陈天泽"                         # 找单人 wxid
+vchat history-history -n 30                    # 你的微信内搜索历史
 
 # 语音
-wxchat voice-ls "群名"                          # 列语音 local_id
-wxchat voice-transcribe "群名" --local-id 11239 # 转录单条语音
-wxchat voice-stats                              # 全局语音密度排行
+vchat voice-ls "群名"                          # 列语音 local_id
+vchat voice-transcribe "群名" --local-id 11239 # 转录单条语音
+vchat voice-stats                              # 全局语音密度排行
 
 # 群 & 头像
-wxchat group-info "群名"                        # 群主 + 公告 + 成员数
-wxchat group-members "群名" --avatars -o dir/   # 列成员 + 批量导出真实头像
-wxchat avatar "李祥瑞" -o ~/Downloads
+vchat group-info "群名"                        # 群主 + 公告 + 成员数
+vchat group-members "群名" --avatars -o dir/   # 列成员 + 批量导出真实头像
+vchat avatar "李祥瑞" -o ~/Downloads
 
 # 数据洞察
-wxchat stats-overview                           # 消息总数 / 联系人数 / 时间跨度
-wxchat stats-top-groups -n 10
-wxchat stats-monthly
-wxchat stats-hourly
+vchat stats-overview                           # 消息总数 / 联系人数 / 时间跨度
+vchat stats-top-groups -n 10
+vchat stats-monthly
+vchat stats-hourly
 
 # 朋友圈
-wxchat sns-ls / sns-search "关键词" / sns-user "李祥瑞" / sns-export "李祥瑞"
+vchat sns-ls / sns-search "关键词" / sns-user "李祥瑞" / sns-export "李祥瑞"
 
 # 公众号 / 企微 / 视频号
-wxchat biz-ls / biz-accounts / biz-info / biz-articles
-wxchat bizchat-contacts / bizchat-groups        # 企业微信
-wxchat finder / finder-lives                    # 视频号
+vchat biz-ls / biz-accounts / biz-info / biz-articles
+vchat bizchat-contacts / bizchat-groups        # 企业微信
+vchat finder / finder-lives                    # 视频号
 
 # 其他
-wxchat files / fav-ls / fav-search / fav-tags
-wxchat money / friends / emoji-packages / miniprogram
-wxchat revoked / unread / tags-ls / deleted-sessions
-wxchat watch --chat "群名"                       # 实时监听新消息（tail -f 风格）
+vchat files / fav-ls / fav-search / fav-tags
+vchat money / friends / emoji-packages / miniprogram
+vchat revoked / unread / tags-ls / deleted-sessions
+vchat watch --chat "群名"                       # 实时监听新消息（tail -f 风格）
 ```
 
-完整列表（共 60+）：`wxchat --help`
+完整列表（共 60+）：`vchat --help`
 
 ### 全局 flag
 
 ```bash
-wxchat --version                # 输出版本号
-wxchat --json <subcommand>      # 所有子命令输出 JSON（适合 AI Agent / 管道）
-wxchat --no-color <...>         # 禁用颜色（也尊重 NO_COLOR=1 环境变量）
-wxchat -q <...>                 # 静默模式
-wxchat -v <...>                 # 调试模式
+vchat --version                # 输出版本号
+vchat --json <subcommand>      # 所有子命令输出 JSON（适合 AI Agent / 管道）
+vchat --no-color <...>         # 禁用颜色（也尊重 NO_COLOR=1 环境变量）
+vchat -q <...>                 # 静默模式
+vchat -v <...>                 # 调试模式
 ```
 
 ### Shell completion
 
 ```bash
 # bash
-wxchat completion bash > ~/.local/share/bash-completion/completions/wxchat
+vchat completion bash > ~/.local/share/bash-completion/completions/vchat
 # zsh
-wxchat completion zsh > "${fpath[1]}/_wxchat"
+vchat completion zsh > "${fpath[1]}/_vchat"
 # fish
-wxchat completion fish > ~/.config/fish/completions/wxchat.fish
+vchat completion fish > ~/.config/fish/completions/vchat.fish
 ```
 
 ## 安装
 
 ### 1. 先解密一次（任选其一）
 
-wxchat 不重复造解密的轮子。挑一个上游工具把微信 db 解密成 sqlite：
+vchat 不重复造解密的轮子。挑一个上游工具把微信 db 解密成 sqlite：
 
 | 工具 | 平台 | 微信版本 |
 |---|---|---|
@@ -125,10 +122,10 @@ wxchat 不重复造解密的轮子。挑一个上游工具把微信 db 解密成
 
 按它们的 README 操作一次，拿到一个目录，里面有 `contact.db` / `message_*.db` 等。
 
-### 2. 把产物摆成 wxchat 期望的样子
+### 2. 把产物摆成 vchat 期望的样子
 
 ```
-~/.wxchat/data/decrypted/
+~/.vchat/data/decrypted/
 ├── contact/contact.db
 ├── session/session.db
 ├── message/message_0.db
@@ -139,20 +136,20 @@ wxchat 不重复造解密的轮子。挑一个上游工具把微信 db 解密成
 
 详细布局 + 各工具迁移示例：[`docs/DATA_LAYOUT.md`](docs/DATA_LAYOUT.md)
 
-### 3. 装 wxchat
+### 3. 装 vchat
 
 ```bash
-git clone https://github.com/Larkin0302/wxchat.git ~/Projects/wxchat
-cd ~/Projects/wxchat
+git clone https://github.com/Larkin0302/vchat.git ~/Projects/vchat
+cd ~/Projects/vchat
 bash install.sh
 ```
 
-`install.sh` 把 `wxchat` 软链到 `~/.local/bin/`，并检测数据目录是否就绪。
+`install.sh` 把 `vchat` 软链到 `~/.local/bin/`，并检测数据目录是否就绪。
 
 ### 4. 配置（可选）
 
 ```bash
-# 默认数据目录是 ~/.wxchat/data，如果你的解密产物在别处：
+# 默认数据目录是 ~/.vchat/data，如果你的解密产物在别处：
 export WXCHAT_DATA_DIR=/your/path/containing/decrypted
 
 # 写到 ~/.zshrc 或 ~/.bash_profile 持久化
@@ -161,9 +158,9 @@ export WXCHAT_DATA_DIR=/your/path/containing/decrypted
 ### 5. 验证
 
 ```bash
-wxchat doctor      # 检查必需 db 是否齐全
-wxchat info        # 看数据新鲜度
-wxchat ls 5        # 试拉 5 条最近会话
+vchat doctor      # 检查必需 db 是否齐全
+vchat info        # 看数据新鲜度
+vchat ls 5        # 试拉 5 条最近会话
 ```
 
 ## 工作原理
@@ -173,9 +170,9 @@ wxchat ls 5        # 试拉 5 条最近会话
     ↓ 任意开源解密工具（PyWxDump / WeChatMsg / wechat-decrypt / ...）
 解密产物 ($WXCHAT_DATA_DIR/decrypted/)
     ↓
-wxchat_core/ 查询库（纯 Python stdlib）
+vchat_core/ 查询库
     ↓
-wxchat CLI · 17 个子命令
+vchat CLI · 17 个子命令
     ↓
 你的终端 / LLM Agent / Skill
 ```
@@ -185,7 +182,7 @@ wxchat CLI · 17 个子命令
 ### 拉一个群的全部历史（适合喂给 AI）
 
 ```bash
-wxchat history "祥瑞和Ta的社区朋友们" -n 10000 --asc > /tmp/log.txt
+vchat history "祥瑞和Ta的社区朋友们" -n 10000 --asc > /tmp/log.txt
 # 让 Claude / Cursor 用 Read 工具分块读这个 txt
 ```
 
@@ -194,15 +191,15 @@ wxchat history "祥瑞和Ta的社区朋友们" -n 10000 --asc > /tmp/log.txt
 ### 给某个人导出全部聊天
 
 ```bash
-wxchat export "某某" -o ~/Desktop/someone.json
-wxchat export "某某" --md   # 顺带生成 markdown
+vchat export "某某" -o ~/Desktop/someone.json
+vchat export "某某" --md   # 顺带生成 markdown
 ```
 
 ### 转录一段语音
 
 ```bash
-wxchat voice ls "群名" -n 100                  # 看 local_id
-wxchat voice transcribe "群名" --local-id 11239 # 出文字
+vchat voice ls "群名" -n 100                  # 看 local_id
+vchat voice transcribe "群名" --local-id 11239 # 出文字
 ```
 
 走本地 `openai-whisper` + `silk-python`，转写结果落 `voice_transcriptions.json` 自带缓存。
@@ -210,10 +207,10 @@ wxchat voice transcribe "群名" --local-id 11239 # 出文字
 ### 数据洞察
 
 ```bash
-wxchat stats overview         # 消息总数 / 聊天对象数 / 时间跨度
-wxchat stats top-groups -n 20 # 最活跃的群
-wxchat stats hourly           # 看自己一天哪个小时最活跃
-wxchat voice stats            # 各群语音密度排行
+vchat stats overview         # 消息总数 / 聊天对象数 / 时间跨度
+vchat stats top-groups -n 20 # 最活跃的群
+vchat stats hourly           # 看自己一天哪个小时最活跃
+vchat voice stats            # 各群语音密度排行
 ```
 
 ## 适合谁用
@@ -226,23 +223,23 @@ wxchat voice stats            # 各群语音密度排行
 
 ## 当库用
 
-`wxchat_core/` 是独立 Python 包，可以单独 import：
+`vchat_core/` 是独立 Python 包，可以单独 import：
 
 ```python
-from wxchat_core import get_decrypted_dir
-from wxchat_core.contacts import resolve_chat_context, get_chatroom_members
-from wxchat_core.messages import get_chat_history, search_messages
-from wxchat_core.voice import transcribe_voice
+from vchat_core import get_decrypted_dir
+from vchat_core.contacts import resolve_chat_context, get_chatroom_members
+from vchat_core.messages import get_chat_history, search_messages
+from vchat_core.voice import transcribe_voice
 
 print(get_chat_history("某某群", limit=100, oldest_first=True))
 ```
 
 模块：
-- `wxchat_core.cache` · sqlite 连接缓存（mtime + per-key lock + 只读 URI）
-- `wxchat_core.contacts` · 联系人/群/上下文解析
-- `wxchat_core.messages` · 历史/搜索/会话列表
-- `wxchat_core.voice` · SILK 解码 + Whisper 转写 + 缓存
-- `wxchat_core.content` · 消息内容解码（转账/红包/链接卡）
+- `vchat_core.cache` · sqlite 连接缓存（mtime + per-key lock + 只读 URI）
+- `vchat_core.contacts` · 联系人/群/上下文解析
+- `vchat_core.messages` · 历史/搜索/会话列表
+- `vchat_core.voice` · SILK 解码 + Whisper 转写 + 缓存
+- `vchat_core.content` · 消息内容解码（转账/红包/链接卡）
 
 ## 依赖
 
@@ -250,11 +247,11 @@ print(get_chat_history("某某群", limit=100, oldest_first=True))
 - Python 3.9+（仅 stdlib）
 - 数据目录里有合规结构的已解密 sqlite（见 `docs/DATA_LAYOUT.md`）
 - 推荐 `zstandard`（公众号文章 / 部分系统消息内容是 zstd 压缩的）
-- 可选 `openai-whisper` + `silk-python`（仅 `wxchat voice transcribe` 需要）
+- 可选 `openai-whisper` + `silk-python`（仅 `vchat voice transcribe` 需要）
 
 ## 数据隐私
 
-- wxchat 只读本机已解密的 sqlite，**不上传任何数据**
+- vchat 只读本机已解密的 sqlite，**不上传任何数据**
 - 所有处理在本地完成
 - 转录用的也是本地 whisper 模型
 - `.gitignore` 已忽略 `*.db` / `decrypted/` / 转写缓存，防误推
@@ -265,11 +262,11 @@ MIT。见 `LICENSE`。
 
 ## 路线图
 
-见 [`ROADMAP.md`](ROADMAP.md)。短期：单测、`--json` 全子命令输出、`wxchat watch` 实时监听、Windows/Linux 完整验证。
+见 [`ROADMAP.md`](ROADMAP.md)。短期：单测、`--json` 全子命令输出、`vchat watch` 实时监听、Windows/Linux 完整验证。
 
 ## 鸣谢
 
-wxchat 是查询层；解密层站在以下开源项目的肩膀上，平等鸣谢：
+vchat 是查询层；解密层站在以下开源项目的肩膀上，平等鸣谢：
 
 - [PyWxDump](https://github.com/xaoyaoo/PyWxDump)
 - [wechat-decrypt](https://github.com/ylytdeng/wechat-decrypt)
