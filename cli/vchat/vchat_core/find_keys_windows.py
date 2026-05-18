@@ -91,7 +91,7 @@ def find_wechat_pid() -> Optional[int]:
             return None
         candidates: List[int] = []
         while True:
-            if entry.szExeFile.lower() == "wechat.exe":
+            if entry.szExeFile.lower() in ("wechat.exe", "weixin.exe"):
                 candidates.append(entry.th32ProcessID)
             if not k.Process32NextW(snap, ctypes.byref(entry)):
                 break
