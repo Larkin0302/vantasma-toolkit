@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """vchat — 微信本地数据查询、解密、导出 CLI
 
 ⚠️ 仅供个人学习与研究目的。详见 README.md / LICENSE。
@@ -105,6 +105,8 @@ def cmd_history(args):
     out = mcp_server.get_chat_history(
         chat_name=args.name,
         limit=args.n or 50,
+        start_time=args.start_time or "",
+        end_time=args.end_time or "",
         oldest_first=args.asc,
     )
     print(out)
@@ -2394,6 +2396,8 @@ def main():
 
     sp = sub.add_parser("history", help="看历史")
     sp.add_argument("name")
+    sp.add_argument("--start-time", help="起始时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM")
+    sp.add_argument("--end-time", help="结束时间 YYYY-MM-DD 或 YYYY-MM-DD HH:MM")
     sp.add_argument("-n", type=int)
     sp.add_argument("--asc", action="store_true", help="旧到新")
     sp.set_defaults(func=cmd_history)
