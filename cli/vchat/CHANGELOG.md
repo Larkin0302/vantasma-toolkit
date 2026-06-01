@@ -48,6 +48,6 @@ versioning follows [SemVer](https://semver.org/spec/v2.0.0.html).
 - 17 个子命令：ls / search / history / export / contacts / sns / files / solitaire / voice / fav / friends / finder / money / stats / biz / avatar / info
 - 去掉所有 `mcp_server` 依赖
 
-[2.0.0]: https://github.com/Larkin0302/wxchat/releases/tag/v2.0.0
-[1.1.0]: https://github.com/Larkin0302/wxchat/releases/tag/v1.1.0
-[1.0.0]: https://github.com/Larkin0302/wxchat/releases/tag/v1.0.0
+[2.0.0]: https://github.com/xiangruiai/wxchat/releases/tag/v2.0.0
+[1.1.0]: https://github.com/xiangruiai/wxchat/releases/tag/v1.1.0
+[1.0.0]: https://github.com/xiangruiai/wxchat/releases/tag/v1.0.0

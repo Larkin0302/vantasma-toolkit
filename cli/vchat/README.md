@@ -42,7 +42,7 @@ $ vchat ls 5
 
 把这句话贴给你的 AI Agent（Claude Code / Cursor / aider 都行）：
 
-> **「帮我安装这个仓库 https://github.com/Larkin0302/vantasma-toolkit 里的 vchat CLI（路径 cli/vchat）。按它 README 跑：clone → bash install.sh → 装 cryptography + zstandard → sudo vchat setup。完成后跑 vchat doctor 确认本地 db 全部解密。」**
+> **「帮我安装这个仓库 https://github.com/xiangruiai/vantasma-toolkit 里的 vchat CLI（路径 cli/vchat）。按它 README 跑：clone → bash install.sh → 装 cryptography + zstandard → sudo vchat setup。完成后跑 vchat doctor 确认本地 db 全部解密。」**
 
 Agent 会自动跑完。需要你介入的只有：
 - 一次 sudo 密码输入
@@ -51,7 +51,7 @@ Agent 会自动跑完。需要你介入的只有：
 ### 手动安装
 
 ```bash
-git clone https://github.com/Larkin0302/vantasma-toolkit.git
+git clone https://github.com/xiangruiai/vantasma-toolkit.git
 cd vantasma-toolkit/cli/vchat
 bash install.sh
 pip3 install cryptography zstandard
