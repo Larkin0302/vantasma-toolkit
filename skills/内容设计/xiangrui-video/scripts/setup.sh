@@ -28,7 +28,13 @@ else
   $INSTALL && (cd "$SKILL_DIR/scripts" && npm install --quiet puppeteer-core ws)
 fi
 # 3. Chrome
-[[ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]] && ok "Google Chrome" || miss "Google Chrome" "场景渲染需要，请安装 Chrome"
+CHROME_FOUND=false
+[[ -x "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" ]] && CHROME_FOUND=true
+[[ -x "/c/Program Files/Google/Chrome/Application/chrome.exe" ]] && CHROME_FOUND=true
+[[ -x "/c/Program Files (x86)/Google/Chrome/Application/chrome.exe" ]] && CHROME_FOUND=true
+command -v chrome >/dev/null 2>&1 && CHROME_FOUND=true
+command -v google-chrome >/dev/null 2>&1 && CHROME_FOUND=true
+$CHROME_FOUND && ok "Google Chrome" || miss "Google Chrome" "场景渲染需要，请安装 Chrome"
 # 4. Python 依赖
 for mod in "edge_tts:edge-tts（免费TTS兜底）" "whisper:openai-whisper（字幕逐句对齐）" "tiktoken:tiktoken（token演示数据实测）"; do
   m="${mod%%:*}"; desc="${mod#*:}"
