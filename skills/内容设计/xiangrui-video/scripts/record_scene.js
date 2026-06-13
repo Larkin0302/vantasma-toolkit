@@ -6,7 +6,24 @@ const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const path = require('path');
 
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+// 自动检测 Chrome 路径（macOS/Windows/Linux）
+function findChrome() {
+  const fs = require('fs');
+  const candidates = [
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+  ];
+  for (const p of candidates) {
+    try { if (fs.existsSync(p)) return p; } catch (e) {}
+  }
+  return undefined;
+}
+const CHROME = findChrome();
 
 (async () => {
   const [htmlPath, outDir, W, H, dur, fpsArg] = process.argv.slice(2);
